@@ -9,7 +9,7 @@ use App\Http\Controllers\RegistroPescaController;
 
 Route::post('usuario/registrar', [UserController::class, 'register']);
 
-Route::post('/login', [UserController::class, 'login']);
+Route::post('usuario/login', [UserController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
 

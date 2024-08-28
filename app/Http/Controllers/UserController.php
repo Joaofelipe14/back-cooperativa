@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
@@ -20,15 +20,14 @@ class UserController extends Controller
         try {
 
             $validator = Validator::make($request->all(), [
-                'name' => 'required|string|max:255',
-                'email' => 'required|string|email|max:255|unique:users',
-                'password' => 'required|string|min:8|confirmed',
-                'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-                'cpf' => 'nullable|string|max:14',
-                'cap' => 'nullable|string|max:10',
+                'nome' => 'required|string|max:255',
+                'email' => 'nullable|string|email|max:255|unique:users',
+                'password' => 'nullable|string|min:8|confirmed',
+                'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif',
+                'cpf' => 'required|string|max:14|unique:users',
+                'cap' => 'nullable|string|max:20',
                 'contato' => 'nullable|string|max:15',
-                'tipo_usuario' => 'nullable|string|max:50',
-                'primeiro_acesso' => 'nullable',
+                'tipo_usuario' => 'required|string|max:50',
             ]);
 
             if ($validator->fails()) {
@@ -44,16 +43,18 @@ class UserController extends Controller
                 $imagePath = $image->store('perfil', 'public');
             }
 
+            $password = Str::random(10); 
+
             $user = User::create([
-                'name' => $request->name,
+                'name' => $request->nome,
                 'email' => $request->email,
-                'password' => Hash::make($request->password),
+                'password' => Hash::make($password), 
                 'url_perfil' => $imagePath,
                 'cpf' => $request->cpf,
                 'cap' => $request->cap,
                 'contato' => $request->contato,
                 'tipo_usuario' => $request->tipo_usuario,
-                'primeiro_acesso' => $request->primeiro_acesso,
+                'primeiro_acesso' => 'S'
             ]);
 
             return response()->json([
@@ -61,6 +62,8 @@ class UserController extends Controller
                 'dados' => [
                     'mensagem' => 'Usuário cadastrado com sucesso',
                     'usuario' => $user,
+                    'senha'=> $password
+
                 ]
             ], 201);
         } catch (\Exception $e) {
@@ -80,15 +83,13 @@ class UserController extends Controller
         try {
 
             $validator = Validator::make($request->all(), [
-                'name' => 'nullable|string|max:255',
-                'email' => 'nullable|string|email|max:255',
+                'nome' => 'nullable|string|max:255',
                 'password' => 'nullable|string|min:8|confirmed',
                 'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif',
                 'cpf' => 'nullable|string|max:14',
-                'cap' => 'nullable|string|max:10',
+                'cap' => 'nullable|string|max:20',
                 'contato' => 'nullable|string|max:15',
                 'tipo_usuario' => 'nullable|string|max:50',
-                'primeiro_acesso' => 'nullable',
             ]);
 
             if ($validator->fails()) {
@@ -138,11 +139,11 @@ class UserController extends Controller
     public function login(Request $request)
     {
         try {
-            $credentials = $request->only('email', 'password');
+            $credentials = $request->only('cpf', 'password');
 
             if (!Auth::attempt($credentials)) {
                 throw ValidationException::withMessages([
-                    'email' => ['As credenciais fornecidas estão incorretas.'],
+                    'cpf' => ['As credenciais fornecidas estão incorretas.'],
                 ]);
             }
 
