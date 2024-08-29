@@ -43,7 +43,7 @@ class UserController extends Controller
                 $imagePath = $image->store('perfil', 'public');
             }
 
-            $password = Str::random(10); 
+            $password = Str::random(8); 
 
             $user = User::create([
                 'name' => $request->nome,
