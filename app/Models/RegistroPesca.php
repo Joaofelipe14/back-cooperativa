@@ -9,6 +9,8 @@ class RegistroPesca extends Model
 {
     use HasFactory;
 
+    protected $table = 'registro_pesca';
+
     protected $fillable = [
         'local',
         'data_com_hora',

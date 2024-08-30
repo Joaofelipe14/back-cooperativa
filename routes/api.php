@@ -15,13 +15,13 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
     Route::post('/usuario/editar/{id}', [UserController::class, 'update']);
-    Route::get('/me', [UserController::class, 'me']);
+    Route::get('/usuario/me', [UserController::class, 'me']);
 
     /*Registro pesca*/
 
     Route::post('registros-pesca', [RegistroPescaController::class, 'store']);
     Route::put('registros-pesca/{id}', [RegistroPescaController::class, 'update']);
-    Route::get('registros-pesca/user/{userId}', [RegistroPescaController::class, 'getByUserId']);
+    Route::get('registros-pesca/user', [RegistroPescaController::class, 'getByUserId']);
     Route::get('registros-pesca', [RegistroPescaController::class, 'getAll']);
 
     /*Registro financeiro*/
