@@ -2,32 +2,33 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\RegistroPesca;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use App\Models\RegistroVenda;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Response;
 
-class RegistroPescaController extends Controller
+
+class RegistroVendaController extends Controller
 {
     public function store(Request $request)
     {
         try {
             $request->validate([
-                'local' => 'required|string|max:255',
-                'data_com_hora' => 'required|date',
-                'codigo' => 'required|string|max:255',
+                'ponto_venda' => 'required|string|max:255',
+                'quantidade' => 'required|integer',
+                'valor' => 'required|numeric',
             ]);
 
             $user = Auth::user();
             $data = $request->all();
-            $data['id_user'] = $user->id;
-            $registro = RegistroPesca::create($data);
+            $data['id_user_venda'] = $user->id;
+            $registro = RegistroVenda::create($data);
 
             return response()->json([
                 'status' => true,
                 'dados' => [
-                    'mensagem' => 'Registro de pesca criado com sucesso',
+                    'mensagem' => 'Registro de venda criado com sucesso',
                     'registro' => $registro,
                 ],
             ], Response::HTTP_CREATED);
@@ -35,7 +36,7 @@ class RegistroPescaController extends Controller
             return response()->json([
                 'status' => false,
                 'dados' => [
-                    'mensagem' => 'Erro ao criar registro de pesca',
+                    'mensagem' => 'Erro ao criar registro de venda',
                     'erro' => $e->getMessage(),
                 ],
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -46,19 +47,19 @@ class RegistroPescaController extends Controller
     {
         try {
             $request->validate([
-                'local' => 'required|string|max:255',
-                'data_com_hora' => 'required|date',
-                'codigo' => 'required|string|max:255',
-                'id_user' => 'required|exists:users,id',
+                'ponto_venda' => 'required|string|max:255',
+                'quantidade' => 'required|integer',
+                'valor' => 'required|numeric',
+                'id_user_venda' => 'required|exists:users,id',
             ]);
 
-            $registro = RegistroPesca::findOrFail($id);
+            $registro = RegistroVenda::findOrFail($id);
             $registro->update($request->all());
 
             return response()->json([
                 'status' => true,
                 'dados' => [
-                    'mensagem' => 'Registro de pesca atualizado com sucesso',
+                    'mensagem' => 'Registro de venda atualizado com sucesso',
                     'registro' => $registro,
                 ],
             ]);
@@ -66,7 +67,7 @@ class RegistroPescaController extends Controller
             return response()->json([
                 'status' => false,
                 'dados' => [
-                    'mensagem' => 'Registro de pesca não encontrado',
+                    'mensagem' => 'Registro de venda não encontrado',
                     'erro' => $e->getMessage(),
                 ],
             ], Response::HTTP_NOT_FOUND);
@@ -74,7 +75,7 @@ class RegistroPescaController extends Controller
             return response()->json([
                 'status' => false,
                 'dados' => [
-                    'mensagem' => 'Erro ao atualizar registro de pesca',
+                    'mensagem' => 'Erro ao atualizar registro de venda',
                     'erro' => $e->getMessage(),
                 ],
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -84,9 +85,8 @@ class RegistroPescaController extends Controller
     public function getByUserId()
     {
         try {
-
             $user = Auth::user();
-            $registros = RegistroPesca::where('id_user', $user->id)->get();
+            $registros = RegistroVenda::where('id_user_venda', $user->id)->get();
 
             return response()->json([
                 'status' => true,
@@ -98,7 +98,7 @@ class RegistroPescaController extends Controller
             return response()->json([
                 'status' => false,
                 'dados' => [
-                    'mensagem' => 'Erro ao obter registros de pesca',
+                    'mensagem' => 'Erro ao obter registros de venda',
                     'erro' => $e->getMessage(),
                 ],
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -108,7 +108,7 @@ class RegistroPescaController extends Controller
     public function getAll()
     {
         try {
-            $registros = RegistroPesca::all();
+            $registros = RegistroVenda::all();
 
             return response()->json([
                 'status' => true,
@@ -120,10 +120,11 @@ class RegistroPescaController extends Controller
             return response()->json([
                 'status' => false,
                 'dados' => [
-                    'mensagem' => 'Erro ao obter todos os registros de pesca',
+                    'mensagem' => 'Erro ao obter todos os registros de venda',
                     'erro' => $e->getMessage(),
                 ],
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }
+

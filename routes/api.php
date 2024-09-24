@@ -4,8 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RegistroFinanceiroController;
 use App\Http\Controllers\RegistroPescaController;
-
-
+use App\Http\Controllers\RegistroVendaController;
 
 Route::post('usuario/registrar', [UserController::class, 'register']);
 
@@ -18,16 +17,23 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/usuario/me', [UserController::class, 'me']);
 
     /*Registro pesca*/
+    Route::post('pesca', [RegistroPescaController::class, 'store']);
+    Route::put('pesca/{id}', [RegistroPescaController::class, 'update']);
+    Route::get('pesca/meus', [RegistroPescaController::class, 'getByUserId']);
+    Route::get('pesca', [RegistroPescaController::class, 'getAll']);
 
-    Route::post('registros-pesca', [RegistroPescaController::class, 'store']);
-    Route::put('registros-pesca/{id}', [RegistroPescaController::class, 'update']);
-    Route::get('registros-pesca/user', [RegistroPescaController::class, 'getByUserId']);
-    Route::get('registros-pesca', [RegistroPescaController::class, 'getAll']);
+    /*Registro de venda*/
+    Route::prefix('venda')->group(function () {
+        Route::post('/', [RegistroVendaController::class, 'store']);
+        Route::put('/{id}', [RegistroVendaController::class, 'update']);
+        Route::get('/', [RegistroVendaController::class, 'getAll']);
+        Route::get('/meus', [RegistroVendaController::class, 'getByUserId']);
+    });
 
     /*Registro financeiro*/
-    Route::get('registros-financeiros', [RegistroFinanceiroController::class, 'index']);
-    Route::post('registros-financeiros', [RegistroFinanceiroController::class, 'store']);
-    Route::get('registros-financeiros/{id}', [RegistroFinanceiroController::class, 'show']);
-    Route::put('registros-financeiros/{id}', [RegistroFinanceiroController::class, 'update']);
-    Route::delete('registros-financeiros/{id}', [RegistroFinanceiroController::class, 'destroy']);
+    Route::get('financeiros', [RegistroFinanceiroController::class, 'index']);
+    Route::post('financeiros', [RegistroFinanceiroController::class, 'store']);
+    Route::get('financeiros/{id}', [RegistroFinanceiroController::class, 'show']);
+    Route::put('financeiros/{id}', [RegistroFinanceiroController::class, 'update']);
+    Route::delete('financeiros/{id}', [RegistroFinanceiroController::class, 'destroy']);
 });
