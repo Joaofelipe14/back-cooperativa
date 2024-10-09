@@ -108,7 +108,7 @@ class RegistroVendaController extends Controller
     public function getAll()
     {
         try {
-            $registros = RegistroVenda::all();
+            $registros = RegistroVenda::with('user')->get();
 
             return response()->json([
                 'status' => true,

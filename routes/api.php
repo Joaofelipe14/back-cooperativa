@@ -13,6 +13,8 @@ Route::post('usuario/login', [UserController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
 
 
+    Route::get('/busca-usuarios', [UserController::class, 'getAll']);
+
     Route::post('/usuario/editar/{id}', [UserController::class, 'update']);
     Route::get('/usuario/me', [UserController::class, 'me']);
 

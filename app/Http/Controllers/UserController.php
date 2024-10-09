@@ -26,8 +26,7 @@ class UserController extends Controller
                 'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif',
                 'cpf' => 'required|string|max:14|unique:users',
                 'cap' => 'nullable|string|max:20',
-                'contato' => 'nullable|string|max:15',
-                'tipo_usuario' => 'required|string|max:50',
+                'contato' => 'nullable|string|max:15'
             ]);
 
             if ($validator->fails()) {
@@ -40,20 +39,19 @@ class UserController extends Controller
             $imagePath = null;
             if ($request->hasFile('profile_image')) {
                 $image = $request->file('profile_image');
-                $imagePath = $image->store('perfil', 'public');
-            }
+                $imagePath = env('APP_URL') . '/storage/' . $image->store('perfil', 'public');
 
-            $password = Str::random(8); 
+            }
 
             $user = User::create([
                 'name' => $request->nome,
                 'email' => $request->email,
-                'password' => Hash::make($password), 
+                'password' => $request->cpf,
                 'url_perfil' => $imagePath,
                 'cpf' => $request->cpf,
                 'cap' => $request->cap,
                 'contato' => $request->contato,
-                'tipo_usuario' => $request->tipo_usuario,
+                'tipo_usuario' => 'colaborador',
                 'primeiro_acesso' => 'S'
             ]);
 
@@ -62,7 +60,7 @@ class UserController extends Controller
                 'dados' => [
                     'mensagem' => 'Usuário cadastrado com sucesso',
                     'usuario' => $user,
-                    'senha'=> $password
+                    'senha' => $request->cpf
 
                 ]
             ], 201);
@@ -81,7 +79,6 @@ class UserController extends Controller
     {
 
         try {
-
             $validator = Validator::make($request->all(), [
                 'nome' => 'nullable|string|max:255',
                 'password' => 'nullable|string|min:8|confirmed',
@@ -98,21 +95,21 @@ class UserController extends Controller
                     'dados' => $validator->errors()
                 ], 422);
             }
-            $user = User::find($id);
 
+            $user = User::find($id);
             $userAuth = Auth::user();
 
             if ($userAuth->id !== $user->id) {
                 return response()->json([
                     'status' => false,
-                    'dados' => ['mensagem' => 'Usuário não encontrado ou não autorizado']
+                    'dados' => ['mensagem' => 'Usuário não encontrado ou não autorizado.']
                 ], 403);
             }
 
             if ($request->hasFile('profile_image')) {
                 $image = $request->file('profile_image');
                 $imagePath = $image->store('perfil', 'public');
-                $request->merge(['url_perfil' => $imagePath]);
+                $request->merge(['url_perfil' => env('APP_URL') . '/storage/' . $imagePath]);
             }
 
             $data = $request->all();
@@ -179,6 +176,15 @@ class UserController extends Controller
         return response()->json([
             'status' => true,
             'dados' => $user,
+        ]);
+    }
+
+    public function getAll()
+    {
+        $usuarios = User::all();
+        return response()->json([
+            'sucesso' => true,
+            'dados' => $usuarios
         ]);
     }
 }

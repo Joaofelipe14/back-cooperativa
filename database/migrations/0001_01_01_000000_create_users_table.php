@@ -18,9 +18,8 @@ return new class extends Migration
             $table->string('cpf')->unique();
             $table->string('cap')->nullable();
             $table->string('contato')->nullable();
-            $table->string('nivel')->nullable();
             $table->string('tipo_usuario');
-            $table->string('primeiro_acesso'); // vai definir se vai mudar a senha ou nao 
+            $table->string('primeiro_acesso'); 
             $table->string('email')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');

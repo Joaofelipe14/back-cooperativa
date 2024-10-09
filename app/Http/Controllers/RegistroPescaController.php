@@ -108,7 +108,7 @@ class RegistroPescaController extends Controller
     public function getAll()
     {
         try {
-            $registros = RegistroPesca::all();
+            $registros = RegistroPesca::with('user')->get();
 
             return response()->json([
                 'status' => true,
