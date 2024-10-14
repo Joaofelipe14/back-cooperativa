@@ -9,14 +9,17 @@ class RegistroFinanceiro extends Model
 {
     use HasFactory;
 
+    protected $table = 'registros_financeiros';
+
     protected $fillable = [
-        'periodicidade',
         'transporte',
         'combustivel',
         'embarcacao',
         'energia',
         'user_id',
         'material',
+        'data_inicial',
+        'data_final'
     ];
 
     public function user()

@@ -15,7 +15,8 @@ class CreateRegistrosFinanceirosTable extends Migration
     {
         Schema::create('registros_financeiros', function (Blueprint $table) {
             $table->id();
-            $table->string('periodicidade')->nullable();
+            $table->date('data_inicial')->nullable(); // Novo campo
+            $table->date('data_final')->nullable(); // Novo campo
             $table->string('transporte')->nullable();
             $table->string('combustivel')->nullable();
             $table->string('embarcacao')->nullable();

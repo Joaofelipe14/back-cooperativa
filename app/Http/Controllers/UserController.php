@@ -99,7 +99,7 @@ class UserController extends Controller
             $user = User::find($id);
             $userAuth = Auth::user();
 
-            if ($userAuth->id !== $user->id) {
+            if ($userAuth->id !== $user->id && $userAuth->tipo_usuario !='admin'  ) {
                 return response()->json([
                     'status' => false,
                     'dados' => ['mensagem' => 'Usuário não encontrado ou não autorizado.']
@@ -112,6 +112,13 @@ class UserController extends Controller
                 $request->merge(['url_perfil' => env('APP_URL') . '/storage/' . $imagePath]);
             }
 
+            if($request->primeiro_acesso =='S'){
+
+                $request->merge(['password' => $user->cpf]);
+
+                
+
+            }
             $data = $request->all();
             $user->update($data);
 

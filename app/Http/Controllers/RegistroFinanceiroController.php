@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\RegistroFinanceiro;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Barryvdh\DomPDF\PDF as DomPDFPDF;
+use Barryvdh\DomPDF\Facade\Pdf;
+
 
 class RegistroFinanceiroController extends Controller
 {
@@ -13,6 +16,7 @@ class RegistroFinanceiroController extends Controller
         $registros = RegistroFinanceiro::all();
         return response()->json([
             'mensagem' => 'Registros listados com sucesso',
+            'sucesso'=>true,
             'registros' => $registros,
         ]);
     }
@@ -21,8 +25,9 @@ class RegistroFinanceiroController extends Controller
     {
         try {
             $request->validate([
-                'periodicidade' => 'required|string',
-                'transporte' => 'required|numeric',
+                'data_inicial' => 'required|date',
+                'data_final' => 'required|date|after_or_equal:data_inicial',
+                'transporte' => 'required|string',
                 'combustivel' => 'required|numeric',
                 'embarcacao' => 'required|string',
                 'energia' => 'required|numeric',
@@ -30,7 +35,8 @@ class RegistroFinanceiroController extends Controller
             ]);
 
             $registro = RegistroFinanceiro::create([
-                'periodicidade' => $request->periodicidade,
+                'data_inicial' => $request->data_inicial,
+                'data_final' => $request->data_final,
                 'transporte' => $request->transporte,
                 'combustivel' => $request->combustivel,
                 'embarcacao' => $request->embarcacao,
@@ -42,10 +48,12 @@ class RegistroFinanceiroController extends Controller
             return response()->json([
                 'mensagem' => 'Registro financeiro criado com sucesso',
                 'registro' => $registro,
+                'sucesso'=>true
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'mensagem' => 'Erro ao criar registro financeiro',
+                'sucesso'=>false,
                 'erro' => $e->getMessage(),
             ], 500);
         }
@@ -79,7 +87,8 @@ class RegistroFinanceiroController extends Controller
             }
 
             $request->validate([
-                'periodicidade' => 'required|string',
+                'data_inicial' => 'required|date',
+                'data_final' => 'required|date|after_or_equal:data_inicial',
                 'transporte' => 'required|numeric',
                 'combustivel' => 'required|numeric',
                 'embarcacao' => 'required|string',
@@ -88,7 +97,8 @@ class RegistroFinanceiroController extends Controller
             ]);
 
             $registro->update([
-                'periodicidade' => $request->periodicidade,
+                'data_inicial' => $request->data_inicial,
+                'data_final' => $request->data_final,
                 'transporte' => $request->transporte,
                 'combustivel' => $request->combustivel,
                 'embarcacao' => $request->embarcacao,
@@ -99,11 +109,15 @@ class RegistroFinanceiroController extends Controller
             return response()->json([
                 'mensagem' => 'Registro financeiro atualizado com sucesso',
                 'registro' => $registro,
+                'sucesso'=>true
+
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'mensagem' => 'Erro ao atualizar registro financeiro',
                 'erro' => $e->getMessage(),
+                'sucesso'=>false
+
             ], 500);
         }
     }
@@ -123,6 +137,8 @@ class RegistroFinanceiroController extends Controller
 
             return response()->json([
                 'mensagem' => 'Registro financeiro deletado com sucesso',
+                'sucesso'=>true
+
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -130,5 +146,26 @@ class RegistroFinanceiroController extends Controller
                 'erro' => $e->getMessage(),
             ], 500);
         }
+    }
+
+
+    public function gerarPdf(Request $request)
+    {
+        $ids = $request->input('ids');
+        //$ids = (1, 500); 
+
+        $registros = RegistroFinanceiro::whereIn('id', $ids)->get();
+
+        if ($registros->isEmpty()) {
+            return response()->json([
+                'mensagem' => 'Nenhum registro encontrado.',
+                'sucesso' => false,
+            ], 404);
+        }
+
+        $user = Auth::user(); 
+        $pdf = PDF::loadView('pdf.financeiro', compact('registros', 'user'));
+
+       return $pdf->download('registros_financeiros.pdf');
     }
 }
