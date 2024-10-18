@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Auditoria;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -115,10 +116,20 @@ class UserController extends Controller
             if($request->primeiro_acesso =='S'){
 
                 $request->merge(['password' => $user->cpf]);
-
-                
-
             }
+
+
+            $data = $request->all();
+            $user->update($data);
+
+            $dados = [
+                'user_id'   => $userAuth->id,            
+                'acao'      => 'update',  
+                'tabela'    => 'user',  
+                'historico' => $user->id . ' valor: ' . json_encode($data),
+            ];
+            Auditoria::create($dados);
+
             $data = $request->all();
             $user->update($data);
 
@@ -153,6 +164,15 @@ class UserController extends Controller
 
             $user = Auth::user();
             $token = $user->createToken('Personal Access Token')->plainTextToken;
+
+            $dados = [
+                'user_id'   => $user->id,            
+                'acao'      => 'login',  
+                'tabela'    => 'login',  
+                'historico' => 'Usuario logando: '+ $user,
+            ];
+            
+            Auditoria::create($dados);
 
             return response()->json([
                 'sucesso' => true,

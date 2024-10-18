@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Auditoria;
 use App\Models\RegistroFinanceiro;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -44,6 +45,18 @@ class RegistroFinanceiroController extends Controller
                 'user_id' => Auth::id(),
                 'material' => $request->material,
             ]);
+
+
+
+            $user = Auth::user();
+            $dados = [
+                'user_id'   => $user->id,            
+                'acao'      => 'create',  
+                'tabela'    => 'registros_financeiros',  
+                'historico' =>   $registro
+            ];
+            
+            Auditoria::create($dados);
 
             return response()->json([
                 'mensagem' => 'Registro financeiro criado com sucesso',
