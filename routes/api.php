@@ -3,12 +3,17 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RegistroFinanceiroController;
+use App\Http\Controllers\LocalizacaoController;
+
 use App\Http\Controllers\RegistroPescaController;
 use App\Http\Controllers\RegistroVendaController;
 
 Route::post('usuario/registrar', [UserController::class, 'register']);
 
 Route::post('usuario/login', [UserController::class, 'login']);
+
+Route::apiResource('localizacoes', LocalizacaoController::class);
+
 
 Route::middleware('auth:sanctum')->group(function () {
 
