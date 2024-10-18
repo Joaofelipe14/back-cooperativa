@@ -169,7 +169,7 @@ class UserController extends Controller
                 'user_id'   => $user->id,            
                 'acao'      => 'login',  
                 'tabela'    => 'login',  
-                'historico' => 'Usuario logando: '+ $user,
+                'historico' => 'Usuario logando: '.json_encode($user),
             ];
             
             Auditoria::create($dados);

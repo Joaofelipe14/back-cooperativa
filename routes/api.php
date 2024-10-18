@@ -12,7 +12,6 @@ Route::post('usuario/registrar', [UserController::class, 'register']);
 
 Route::post('usuario/login', [UserController::class, 'login']);
 
-Route::apiResource('localizacoes', LocalizacaoController::class);
 
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -44,5 +43,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('financeiros/{id}', [RegistroFinanceiroController::class, 'update']);
     Route::delete('financeiros/{id}', [RegistroFinanceiroController::class, 'destroy']);
     Route::post('/financeiros/relatorio', [RegistroFinanceiroController::class, 'gerarPdf']);
+    
+
+    /*Localizações*/
+    Route::apiResource('localizacoes', LocalizacaoController::class);
+
 
 });

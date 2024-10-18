@@ -16,6 +16,7 @@ class RegistroVenda extends Model
         'quantidade',
         'valor',
         'id_user_venda',
+        'pescado'
     ];
 
     public function user()

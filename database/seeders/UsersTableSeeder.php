@@ -1,0 +1,26 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+
+class UsersTableSeeder extends Seeder
+{
+    public function run()
+    {
+        DB::table('users')->insert([
+            ['id' => 1, 'name' => 'joao felipe', 'url_perfil' => 'http://localhost:8000/storage/perfil/8W07xTZbyfuRe7pQuvzFQ95nl7tmireRhfRrHtjU.jpg', 'cpf' => '55555555555', 'cap' => '55555555', 'contato' => '99981708802', 'tipo_usuario' => 'admin', 'primeiro_acesso' => 'N', 'email' => NULL, 'email_verified_at' => NULL, 'password' => '$2y$12$lF4.w4wgHXplEvaLNm/COeHPWh.yQk5Fn5zEfiLyHhjuquQyGC90.', 'remember_token' => NULL, 'created_at' => '2024-10-11 18:41:56', 'updated_at' => '2024-10-18 19:32:59'],
+            ['id' => 2, 'name' => 'João Silva', 'url_perfil' => 'https://randomuser.me/api/portraits/men/1.jpg', 'cpf' => '12345678900', 'cap' => '12345678', 'contato' => '11987654321', 'tipo_usuario' => 'colaborador', 'primeiro_acesso' => 'N', 'email' => 'joao@example.com', 'email_verified_at' => NULL, 'password' => 'password1', 'remember_token' => NULL, 'created_at' => '2024-10-11 15:44:36', 'updated_at' => '2024-10-11 15:44:36'],
+            ['id' => 3, 'name' => 'MARIA', 'url_perfil' => 'https://randomuser.me/api/portraits/women/1.jpg', 'cpf' => '98765432100', 'cap' => '23456789', 'contato' => '11998765432', 'tipo_usuario' => 'colaborador', 'primeiro_acesso' => 'N', 'email' => 'maria@example.com', 'email_verified_at' => NULL, 'password' => '$2y$12$zaemFHYA08xutJHK4byqDOGHtXYNm6KTo.pwyO2X9dK3ITIH/83xu', 'remember_token' => NULL, 'created_at' => '2024-10-11 15:44:36', 'updated_at' => '2024-10-11 19:00:42'],
+            ['id' => 4, 'name' => 'Pedro Santos', 'url_perfil' => 'https://randomuser.me/api/portraits/men/2.jpg', 'cpf' => '45678912300', 'cap' => '34567890', 'contato' => '11876543210', 'tipo_usuario' => 'colaborador', 'primeiro_acesso' => 'N', 'email' => 'pedro@example.com', 'email_verified_at' => NULL, 'password' => 'password3', 'remember_token' => NULL, 'created_at' => '2024-10-11 15:44:36', 'updated_at' => '2024-10-11 15:44:36'],
+            ['id' => 5, 'name' => 'Ana Costa', 'url_perfil' => 'https://randomuser.me/api/portraits/women/2.jpg', 'cpf' => '32165498700', 'cap' => '45678901', 'contato' => '11987654321', 'tipo_usuario' => 'colaborador', 'primeiro_acesso' => 'N', 'email' => 'ana@example.com', 'email_verified_at' => NULL, 'password' => '$2y$12$QKgoKcYT.C81Y4ftwnkzCuKu3uzzQdoIUN3zg0SYbdVYcBWEHSoOe', 'remember_token' => NULL, 'created_at' => '2024-10-11 15:44:36', 'updated_at' => '2024-10-18 19:39:56'],
+            ['id' => 6, 'name' => 'Lucas Pereira', 'url_perfil' => 'https://randomuser.me/api/portraits/men/3.jpg', 'cpf' => '65432178900', 'cap' => '56789012', 'contato' => '11934567890', 'tipo_usuario' => 'colaborador', 'primeiro_acesso' => 'N', 'email' => 'lucas@example.com', 'email_verified_at' => NULL, 'password' => 'password5', 'remember_token' => NULL, 'created_at' => '2024-10-11 15:44:36', 'updated_at' => '2024-10-11 15:44:36'],
+            ['id' => 7, 'name' => 'Fernanda Almeida', 'url_perfil' => 'https://randomuser.me/api/portraits/women/3.jpg', 'cpf' => '78912345600', 'cap' => '67890123', 'contato' => '11812345678', 'tipo_usuario' => 'colaborador', 'primeiro_acesso' => 'N', 'email' => 'fernanda@example.com', 'email_verified_at' => NULL, 'password' => 'password6', 'remember_token' => NULL, 'created_at' => '2024-10-11 15:44:36', 'updated_at' => '2024-10-11 15:44:36'],
+            ['id' => 8, 'name' => 'Ricardo Lima', 'url_perfil' => 'https://randomuser.me/api/portraits/men/4.jpg', 'cpf' => '15975348600', 'cap' => '78901234', 'contato' => '11965432109', 'tipo_usuario' => 'colaborador', 'primeiro_acesso' => 'N', 'email' => 'ricardo@example.com', 'email_verified_at' => NULL, 'password' => 'password7', 'remember_token' => NULL, 'created_at' => '2024-10-11 15:44:36', 'updated_at' => '2024-10-11 15:44:36'],
+            ['id' => 9, 'name' => 'Camila Rodrigues', 'url_perfil' => 'https://randomuser.me/api/portraits/women/4.jpg', 'cpf' => '75315946800', 'cap' => '89012345', 'contato' => '11898765432', 'tipo_usuario' => 'admin', 'primeiro_acesso' => 'S', 'email' => 'camila@example.com', 'email_verified_at' => NULL, 'password' => '$2y$12$oAUW6I8Yu9.gFrfjeDxc2e5FZ53xcABcBKdsTaGEUTNG6kevv4I3C', 'remember_token' => NULL, 'created_at' => '2024-10-11 15:44:36', 'updated_at' => '2024-10-18 03:18:40'],
+            ['id' => 10, 'name' => 'Marcos Nascimento', 'url_perfil' => 'https://randomuser.me/api/portraits/men/5.jpg', 'cpf' => '85236974100', 'cap' => '90123456', 'contato' => '11987654321', 'tipo_usuario' => 'colaborador', 'primeiro_acesso' => 'N', 'email' => 'marcos@example.com', 'email_verified_at' => NULL, 'password' => 'password9', 'remember_token' => NULL, 'created_at' => '2024-10-11 15:44:36', 'updated_at' => '2024-10-11 15:44:36'],
+            ['id' => 11, 'name' => 'Juliana Martins', 'url_perfil' => 'https://randomuser.me/api/portraits/women/5.jpg', 'cpf' => '36985214700', 'cap' => '01234567', 'contato' => '11876543210', 'tipo_usuario' => 'colaborador', 'primeiro_acesso' => 'N', 'email' => 'juliana@example.com', 'email_verified_at' => NULL, 'password' => 'password10', 'remember_token' => NULL, 'created_at' => '2024-10-11 15:44:36', 'updated_at' => '2024-10-18 19:38:31'],
+        ]);
+    }
+}

@@ -15,7 +15,7 @@ class RegistroVendaController extends Controller
     {
         try {
             $request->validate([
-                'ponto_venda' => 'required|string|max:255',
+                'ponto_venda' => 'required|integer|max:255',
                 'quantidade' => 'required|integer',
                 'valor' => 'required|numeric',
             ]);
@@ -47,13 +47,21 @@ class RegistroVendaController extends Controller
     {
         try {
             $request->validate([
-                'ponto_venda' => 'required|string|max:255',
-                'quantidade' => 'required|integer',
-                'valor' => 'required|numeric',
+               
                 'id_user_venda' => 'required|exists:users,id',
             ]);
 
             $registro = RegistroVenda::findOrFail($id);
+
+            $userAuth = Auth::user();
+
+            if ($userAuth->id !== $registro->id_user_venda  ) {
+                return response()->json([
+                    'status' => false,
+                    'dados' => ['mensagem' => 'Usuário não encontrado ou não autorizado.']
+                ], 403);
+            }
+
             $registro->update($request->all());
 
             return response()->json([

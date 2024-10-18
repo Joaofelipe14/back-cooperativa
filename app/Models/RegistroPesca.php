@@ -16,6 +16,8 @@ class RegistroPesca extends Model
         'data_com_hora',
         'codigo',
         'id_user',
+        'pescado',
+        'quantidade'
     ];
 
     public function user()

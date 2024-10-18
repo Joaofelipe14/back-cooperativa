@@ -14,14 +14,20 @@ class RegistroPescaController extends Controller
     {
         try {
             $request->validate([
-                'local' => 'required|string|max:255',
+                'local' => 'required|integer',
                 'data_com_hora' => 'required|date',
-                'codigo' => 'required|string|max:255',
             ]);
 
             $user = Auth::user();
             $data = $request->all();
             $data['id_user'] = $user->id;
+
+            do {
+                $codigo = mt_rand(100000, 999999);
+            } while (RegistroPesca::where('codigo', $codigo)->exists());
+        
+            $data['codigo'] = $codigo;
+
             $registro = RegistroPesca::create($data);
 
             return response()->json([
@@ -46,13 +52,21 @@ class RegistroPescaController extends Controller
     {
         try {
             $request->validate([
-                'local' => 'required|string|max:255',
-                'data_com_hora' => 'required|date',
-                'codigo' => 'required|string|max:255',
+    
                 'id_user' => 'required|exists:users,id',
             ]);
 
             $registro = RegistroPesca::findOrFail($id);
+
+            $userAuth = Auth::user();
+
+            if ($userAuth->id !== $registro->id_user  ) {
+                return response()->json([
+                    'status' => false,
+                    'dados' => ['mensagem' => 'Usuário não encontrado ou não autorizado.']
+                ], 403);
+            }
+
             $registro->update($request->all());
 
             return response()->json([

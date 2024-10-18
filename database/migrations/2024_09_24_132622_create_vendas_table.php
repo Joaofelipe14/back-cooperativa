@@ -13,12 +13,15 @@ return new class extends Migration
     {
         Schema::create('registro_venda', function (Blueprint $table) {
             $table->id();
-            $table->string('ponto_venda');
             $table->string('quantidade');
             $table->string('valor');
+            $table->unsignedBigInteger('ponto_venda');
+            $table->string('pescado')->nullable();
             $table->unsignedBigInteger('id_user_venda');
             $table->foreign('id_user_venda')->references('id')->on('users')->onDelete('restrict');
             $table->timestamps();
+        
+            $table->foreign('ponto_venda')->references('id')->on('localizacao')->onDelete('restrict');
         });
     }
 
