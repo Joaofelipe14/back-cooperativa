@@ -23,13 +23,23 @@ class RegistroVendaController extends Controller
             $user = Auth::user();
             $data = $request->all();
             $data['id_user_venda'] = $user->id;
+
+            do {
+                $codigo = mt_rand(100000, 999999);
+            } while (RegistroVenda::where('codigo', $codigo)->exists());
+        
+            $data['codigo'] = $codigo;
+
             $registro = RegistroVenda::create($data);
+
+            $registro_novo = RegistroVenda::with('localizacao')->where('id', $registro->id)->get();
+
 
             return response()->json([
                 'status' => true,
                 'dados' => [
                     'mensagem' => 'Registro de venda criado com sucesso',
-                    'registro' => $registro,
+                    'registro' => $registro_novo,
                 ],
             ], Response::HTTP_CREATED);
         } catch (\Exception $e) {
@@ -94,7 +104,7 @@ class RegistroVendaController extends Controller
     {
         try {
             $user = Auth::user();
-            $registros = RegistroVenda::where('id_user_venda', $user->id)->get();
+            $registros = RegistroVenda::with('localizacao')->where('id_user_venda', $user->id)->get();
 
             return response()->json([
                 'status' => true,

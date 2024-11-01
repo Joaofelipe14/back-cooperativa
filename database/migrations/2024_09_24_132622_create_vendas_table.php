@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('quantidade');
             $table->string('valor');
+            $table->string('codigo');
             $table->unsignedBigInteger('ponto_venda');
             $table->string('pescado')->nullable();
             $table->unsignedBigInteger('id_user_venda');

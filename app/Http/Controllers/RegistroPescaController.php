@@ -30,11 +30,14 @@ class RegistroPescaController extends Controller
 
             $registro = RegistroPesca::create($data);
 
+            $registro_novo = RegistroPesca::with('localizacao')->where('id', $registro->id)->get();
+
+
             return response()->json([
                 'status' => true,
                 'dados' => [
                     'mensagem' => 'Registro de pesca criado com sucesso',
-                    'registro' => $registro,
+                    'registro' => $registro_novo,
                 ],
             ], Response::HTTP_CREATED);
         } catch (\Exception $e) {
@@ -100,7 +103,7 @@ class RegistroPescaController extends Controller
         try {
 
             $user = Auth::user();
-            $registros = RegistroPesca::where('id_user', $user->id)->get();
+            $registros = RegistroPesca::with('localizacao')->where('id_user', $user->id)->get();
 
             return response()->json([
                 'status' => true,

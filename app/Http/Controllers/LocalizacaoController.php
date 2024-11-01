@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\localizacao;
+use App\Models\Localizacao;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -11,7 +11,7 @@ class LocalizacaoController extends Controller
     public function index()
     {
         try {
-            $registros = localizacao::all();
+            $registros = Localizacao::all();
 
             return response()->json([
                 'status' => true,
@@ -33,7 +33,7 @@ class LocalizacaoController extends Controller
     public function store(Request $request)
     {
         try {
-            $localizacao = localizacao::create($request->validate([
+            $localizacao = Localizacao::create($request->validate([
                 'descricao' => 'required|string',
                 'descricao_amigavel' => 'required|string',
                 'latitude' => 'required|numeric',
@@ -61,7 +61,7 @@ class LocalizacaoController extends Controller
     public function show($id)
     {
         try {
-            $localizacao = localizacao::findOrFail($id);
+            $localizacao = Localizacao::findOrFail($id);
 
             return response()->json([
                 'status' => true,
@@ -83,7 +83,7 @@ class LocalizacaoController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $localizacao = localizacao::findOrFail($id);
+            $localizacao = Localizacao::findOrFail($id);
             $localizacao->update($request->validate([
                 'descricao' => 'sometimes|required|string',
                 'descricao_amigavel' => 'sometimes|required|string',
@@ -112,7 +112,7 @@ class LocalizacaoController extends Controller
     public function destroy($id)
     {
         try {
-            $localizacao = localizacao::findOrFail($id);
+            $localizacao = Localizacao::findOrFail($id);
             $localizacao->delete();
 
             return response()->json([

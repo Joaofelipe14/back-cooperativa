@@ -16,11 +16,19 @@ class RegistroVenda extends Model
         'quantidade',
         'valor',
         'id_user_venda',
-        'pescado'
+        'pescado',
+        'codigo'
+
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class, 'id_user_venda');
     }
+
+    public function localizacao()
+{
+    return $this->belongsTo(Localizacao::class, 'ponto_venda'); 
+}
+
 }
