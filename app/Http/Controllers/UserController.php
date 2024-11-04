@@ -126,12 +126,9 @@ class UserController extends Controller
                 'user_id'   => $userAuth->id,            
                 'acao'      => 'update',  
                 'tabela'    => 'user',  
-                'historico' => $user->id . ' valor: ' . json_encode($data),
+                'historico' => $user->id . ' valor: ' . json_encode( $user),
             ];
             Auditoria::create($dados);
-
-            $data = $request->all();
-            $user->update($data);
 
             return response()->json([
                 'sucesso' => true,

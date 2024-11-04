@@ -15,7 +15,7 @@ class RegistroPescaController extends Controller
         try {
             $request->validate([
                 'local' => 'required|integer',
-                'data_com_hora' => 'required|date',
+                'data_com_hora' => 'date',
             ]);
 
             $user = Auth::user();
@@ -125,7 +125,7 @@ class RegistroPescaController extends Controller
     public function getAll()
     {
         try {
-            $registros = RegistroPesca::with('user')->get();
+            $registros = RegistroPesca::with(['user','localizacao'])->get();
 
             return response()->json([
                 'status' => true,

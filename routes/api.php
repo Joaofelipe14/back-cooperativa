@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuditoriaController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RegistroFinanceiroController;
@@ -48,5 +49,6 @@ Route::middleware('auth:sanctum')->group(function () {
     /*Localizações*/
     Route::apiResource('localizacoes', LocalizacaoController::class);
 
-
+    /*Auditoria*/
+    Route::get('busca-auditoria', [AuditoriaController::class,'getAll']);
 });

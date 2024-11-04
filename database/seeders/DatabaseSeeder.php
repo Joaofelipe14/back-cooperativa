@@ -12,6 +12,7 @@ class DatabaseSeeder extends Seeder
             LocalizacaoTableSeeder::class,
             // Adicione outros seeders aqui
             UsersTableSeeder::class,
+            CooperativaSeeder::class
         ]);
     }
 }

@@ -77,10 +77,10 @@
     <div class="content">
         <div class="cooperative-info">
             <h3>Dados da Cooperativa</h3>
-            <p><strong>Nome:</strong> Cooperativa de Pesca São João</p>
-            <p><strong>Endereço:</strong> Rua das Palmeiras, 123 - Centro</p>
-            <p><strong>CEP:</strong> 12345-678</p>
-        </div>
+            <p><strong>Nome:</strong> {{$cooperativa->nome}}</p>
+            <p><strong>Endereço:</strong> {{$cooperativa->endereco}}</p>
+            <p><strong>CEP:</strong> {{$cooperativa->cep}} </p>
+        </div>cooperativa
 
         <div class="cooperative-info">
             <h3>Informações do Usuário</h3>

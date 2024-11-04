@@ -5,17 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Auditoria extends Model
+class Cooperativa extends Model
 {
     use HasFactory;
 
-    protected $table = 'auditoria';
+    protected $table = 'cooperativa';
 
     protected $fillable = [
-        'user_id',
-        'acao',
-        'tabela',
-        'historico'
+        'nome',
+        'cep',
+        'endereco'
     ];
     public function user()
     {

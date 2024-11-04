@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Auditoria;
+use App\Models\Cooperativa;
 use App\Models\RegistroFinanceiro;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,7 +18,7 @@ class RegistroFinanceiroController extends Controller
         $registros = RegistroFinanceiro::all();
         return response()->json([
             'mensagem' => 'Registros listados com sucesso',
-            'sucesso'=>true,
+            'sucesso' => true,
             'registros' => $registros,
         ]);
     }
@@ -25,6 +26,17 @@ class RegistroFinanceiroController extends Controller
     public function store(Request $request)
     {
         try {
+
+
+            $userAuth = Auth::user();
+
+            if ($userAuth->tipo_usuario != 'admin') {
+                return response()->json([
+                    'status' => false,
+                    'dados' => ['mensagem' => 'Usuário não autorizado.']
+                ], 403);
+            }
+
             $request->validate([
                 'data_inicial' => 'required|date',
                 'data_final' => 'required|date|after_or_equal:data_inicial',
@@ -50,23 +62,23 @@ class RegistroFinanceiroController extends Controller
 
             $user = Auth::user();
             $dados = [
-                'user_id'   => $user->id,            
-                'acao'      => 'create',  
-                'tabela'    => 'registros_financeiros',  
+                'user_id'   => $user->id,
+                'acao'      => 'create',
+                'tabela'    => 'registros_financeiros',
                 'historico' =>   $registro
             ];
-            
+
             Auditoria::create($dados);
 
             return response()->json([
                 'mensagem' => 'Registro financeiro criado com sucesso',
                 'registro' => $registro,
-                'sucesso'=>true
+                'sucesso' => true
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'mensagem' => 'Erro ao criar registro financeiro',
-                'sucesso'=>false,
+                'sucesso' => false,
                 'erro' => $e->getMessage(),
             ], 500);
         }
@@ -122,14 +134,14 @@ class RegistroFinanceiroController extends Controller
             return response()->json([
                 'mensagem' => 'Registro financeiro atualizado com sucesso',
                 'registro' => $registro,
-                'sucesso'=>true
+                'sucesso' => true
 
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'mensagem' => 'Erro ao atualizar registro financeiro',
                 'erro' => $e->getMessage(),
-                'sucesso'=>false
+                'sucesso' => false
 
             ], 500);
         }
@@ -150,7 +162,7 @@ class RegistroFinanceiroController extends Controller
 
             return response()->json([
                 'mensagem' => 'Registro financeiro deletado com sucesso',
-                'sucesso'=>true
+                'sucesso' => true
 
             ]);
         } catch (\Exception $e) {
@@ -164,8 +176,18 @@ class RegistroFinanceiroController extends Controller
 
     public function gerarPdf(Request $request)
     {
+
+        $userAuth = Auth::user();
+
+        if ($userAuth->tipo_usuario != 'admin') {
+            return response()->json([
+                'status' => false,
+                'dados' => ['mensagem' => 'Usuário não autorizado.']
+            ], 403);
+        }
+
         $ids = $request->input('ids');
-        //$ids = (1, 500); 
+
 
         $registros = RegistroFinanceiro::whereIn('id', $ids)->get();
 
@@ -176,9 +198,10 @@ class RegistroFinanceiroController extends Controller
             ], 404);
         }
 
-        $user = Auth::user(); 
-        $pdf = PDF::loadView('pdf.financeiro', compact('registros', 'user'));
+        $user = Auth::user();
+        $cooperativa = Cooperativa::first();
+        $pdf = PDF::loadView('pdf.financeiro', compact('registros', 'user','cooperativa'));
 
-       return $pdf->download('registros_financeiros.pdf');
+        return $pdf->download('registros_financeiros.pdf');
     }
 }
