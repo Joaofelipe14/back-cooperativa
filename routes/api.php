@@ -29,6 +29,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('pesca/meus', [RegistroPescaController::class, 'getByUserId']);
     Route::get('pesca', [RegistroPescaController::class, 'getAll']);
 
+
+
     /*Registro de venda*/
     Route::prefix('venda')->group(function () {
         Route::post('/', [RegistroVendaController::class, 'store']);
@@ -52,3 +54,7 @@ Route::middleware('auth:sanctum')->group(function () {
     /*Auditoria*/
     Route::get('busca-auditoria', [AuditoriaController::class,'getAll']);
 });
+
+
+
+Route::get('relatorio-pesca', [RegistroPescaController::class,'gerarRelatorio']);

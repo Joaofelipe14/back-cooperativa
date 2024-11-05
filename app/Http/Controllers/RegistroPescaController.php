@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cooperativa;
 use App\Models\RegistroPesca;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Mpdf\Mpdf;
+
 
 class RegistroPescaController extends Controller
 {
@@ -109,6 +113,7 @@ class RegistroPescaController extends Controller
                 'status' => true,
                 'dados' => [
                     'registros' => $registros,
+                    'user'=>            $user 
                 ],
             ]);
         } catch (\Exception $e) {
@@ -142,5 +147,61 @@ class RegistroPescaController extends Controller
                 ],
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+    }
+
+    public function gerarRelatorio(Request $request)
+    {
+        $ids = $request->input('ids');  
+        
+        // if (!is_array($ids) || count($ids) === 0) {
+        //     return response()->json([
+        //         'status' => false,
+        //         'message' => 'Lista de IDs inválida ou vazia.',
+        //     ], 400);
+        // }
+
+        $registros = RegistroPesca::with(['user', 'localizacao'])
+            // ->whereIn('id', $ids)
+            ->get();
+
+        if ($registros->isEmpty()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Nenhum registro encontrado para os IDs fornecidos.',
+            ], 404);
+        }
+
+        $cooperativa = Cooperativa::first();
+
+        if (!$cooperativa) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Cooperativa não encontrada.',
+            ], 404);
+        }
+
+        $user = Auth::user();
+        $cooperativa = Cooperativa::first();
+
+        $imagePath = 'https://demopesca.netlify.app/assets/icon_logo.png';
+        $imageData = file_get_contents($imagePath);  
+
+        $base64Image = base64_encode($imageData);    
+     
+    
+        $pdf = PDF::loadView('pdf.relatorio_pesca', [
+            'registros' => $registros,
+            'user' => $user,
+            'cooperativa' => $cooperativa,
+            'base64Image' => $base64Image 
+        ]);
+
+     
+
+
+        // return view('pdf.relatorio_pesca', $dados);
+      
+
+        return $pdf->download('relatorio_pesca.pdf');
     }
 }

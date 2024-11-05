@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\RegistroPescaController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -15,3 +16,6 @@ Route::get('/login', function (Request $request) {
 })->name('login');
 
 
+// Route::get('/relatorio', function () {
+//     return view('pdf.relatorio');
+// });

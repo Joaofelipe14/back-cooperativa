@@ -110,6 +110,8 @@ class RegistroVendaController extends Controller
                 'status' => true,
                 'dados' => [
                     'registros' => $registros,
+                    'user'=>            $user ,
+
                 ],
             ]);
         } catch (\Exception $e) {

@@ -200,7 +200,7 @@ class RegistroFinanceiroController extends Controller
 
         $user = Auth::user();
         $cooperativa = Cooperativa::first();
-        $pdf = PDF::loadView('pdf.financeiro', compact('registros', 'user','cooperativa'));
+        $pdf = PDF::loadView('pdf.financeiro', compact('registros', 'user',));
 
         return $pdf->download('registros_financeiros.pdf');
     }

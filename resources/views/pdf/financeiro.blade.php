@@ -70,7 +70,7 @@
 
 <body>
     <div class="header">
-        <img src="https://randomuser.me/api/portraits/men/1.jpg">
+    <img src="{{ asset('images/logo.png') }}" alt="Logo" class="logo">
         <h2>Relatório da Cooperativa de Pesca</h2>
     </div>
 
@@ -80,7 +80,7 @@
             <p><strong>Nome:</strong> {{$cooperativa->nome}}</p>
             <p><strong>Endereço:</strong> {{$cooperativa->endereco}}</p>
             <p><strong>CEP:</strong> {{$cooperativa->cep}} </p>
-        </div>cooperativa
+        </div>
 
         <div class="cooperative-info">
             <h3>Informações do Usuário</h3>
