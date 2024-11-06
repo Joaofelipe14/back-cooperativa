@@ -53,6 +53,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     /*Auditoria*/
     Route::get('busca-auditoria', [AuditoriaController::class,'getAll']);
+    Route::get('tabelas-distintas', [AuditoriaController::class,'getTabelas']);
+
 });
 
 

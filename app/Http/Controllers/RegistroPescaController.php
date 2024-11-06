@@ -127,11 +127,29 @@ class RegistroPescaController extends Controller
         }
     }
 
-    public function getAll()
+    public function getAll(Request $request)
     {
         try {
-            $registros = RegistroPesca::with(['user','localizacao'])->get();
-
+            $page = $request->input('page', 1); 
+            $limit = $request->input('limit', 5); 
+            $searchTerm = $request->input('searchTerm', ''); 
+            $selectedLocalizacao = $request->input('selectedLocalizacao', null); 
+    
+            $query = RegistroPesca::with(['user', 'localizacao']);
+    
+            if ($searchTerm) {
+                $query->whereHas('user', function ($q) use ($searchTerm) {
+                    $q->where('name', 'like', '%' . $searchTerm . '%');
+                });
+            }
+    
+            if ($selectedLocalizacao) {
+                $query->where('local', $selectedLocalizacao);
+            }
+    
+            // Paginação
+            $query->orderBy('id', 'desc');
+            $registros = $query->paginate($limit, ['*'], 'page', $page);
             return response()->json([
                 'status' => true,
                 'dados' => [
