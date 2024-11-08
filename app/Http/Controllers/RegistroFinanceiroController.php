@@ -200,8 +200,13 @@ class RegistroFinanceiroController extends Controller
 
         $user = Auth::user();
         $cooperativa = Cooperativa::first();
-        $pdf = PDF::loadView('pdf.financeiro', compact('registros', 'user',));
+        $imagePath = 'https://demopesca.netlify.app/assets/logoPrincipal.png';
+        $imageData = file_get_contents($imagePath);  
+        $base64Image = base64_encode($imageData);    
+        $cooperativa->logo = $base64Image; 
+     
+        $pdf = PDF::loadView('pdf.financeiro', compact('registros', 'user','cooperativa'));
 
-        return $pdf->download('registros_financeiros.pdf');
+        return $pdf->download('registro_financeiro_' . date('Y-m-d_H-i-s') . '.pdf');
     }
 }

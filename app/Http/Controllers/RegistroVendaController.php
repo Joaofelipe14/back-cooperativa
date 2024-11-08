@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cooperativa;
 use App\Models\RegistroVenda;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Response;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 
 class RegistroVendaController extends Controller
@@ -167,5 +169,56 @@ class RegistroVendaController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
+
+    public function gerarRelatorio(Request $request)
+    {
+        $ids = $request->input('ids');
+        $startDate = $request->input('startDate');
+        $endDate = $request->input('endDate');
+        $location = $request->input('location');
+    
+        // Validação simples dos filtros
+        if (empty($startDate) || empty($endDate)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Por favor, forneça o intervalo de datas.',
+            ], 400);
+        }
+    
+        $registros = RegistroVenda::with(['user', 'localizacao'])
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->where('localizacao', 'like', "%$location%")
+            ->get();
+    
+        if ($registros->isEmpty()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Nenhum registro encontrado.',
+            ], 404);
+        }
+    
+        $cooperativa = Cooperativa::first();
+    
+        if (!$cooperativa) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Cooperativa não encontrada.',
+            ], 404);
+        }
+    
+        $user = Auth::user();
+        $imagePath = 'https://demopesca.netlify.app/assets/logoPrincipal.png';
+        $imageData = file_get_contents($imagePath);
+        $base64Image = base64_encode($imageData);
+        $cooperativa->logo = $base64Image;
+    
+        $pdf = PDF::loadView('pdf.relatorio_venda', compact('registros', 'user', 'cooperativa'));
+    
+        // Retorna o PDF como resposta, para ser baixado pelo frontend
+        return $pdf->download('registro_venda_' . date('Y-m-d_H-i-s') . '.pdf');
+
+    }
+    
 }
 

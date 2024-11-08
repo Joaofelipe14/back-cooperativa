@@ -9,8 +9,7 @@ use Illuminate\Http\Response;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Mpdf\Mpdf;
-
+use Illuminate\Support\Facades\DB;
 
 class RegistroPescaController extends Controller
 {
@@ -29,7 +28,7 @@ class RegistroPescaController extends Controller
             do {
                 $codigo = mt_rand(100000, 999999);
             } while (RegistroPesca::where('codigo', $codigo)->exists());
-        
+
             $data['codigo'] = $codigo;
 
             $registro = RegistroPesca::create($data);
@@ -59,7 +58,7 @@ class RegistroPescaController extends Controller
     {
         try {
             $request->validate([
-    
+
                 'id_user' => 'required|exists:users,id',
             ]);
 
@@ -67,7 +66,7 @@ class RegistroPescaController extends Controller
 
             $userAuth = Auth::user();
 
-            if ($userAuth->id !== $registro->id_user  ) {
+            if ($userAuth->id !== $registro->id_user) {
                 return response()->json([
                     'status' => false,
                     'dados' => ['mensagem' => 'Usuário não encontrado ou não autorizado.']
@@ -113,7 +112,7 @@ class RegistroPescaController extends Controller
                 'status' => true,
                 'dados' => [
                     'registros' => $registros,
-                    'user'=>            $user 
+                    'user' =>            $user
                 ],
             ]);
         } catch (\Exception $e) {
@@ -130,23 +129,23 @@ class RegistroPescaController extends Controller
     public function getAll(Request $request)
     {
         try {
-            $page = $request->input('page', 1); 
-            $limit = $request->input('limit', 5); 
-            $searchTerm = $request->input('searchTerm', ''); 
-            $selectedLocalizacao = $request->input('selectedLocalizacao', null); 
-    
+            $page = $request->input('page', 1);
+            $limit = $request->input('limit', 5);
+            $searchTerm = $request->input('searchTerm', '');
+            $selectedLocalizacao = $request->input('selectedLocalizacao', null);
+
             $query = RegistroPesca::with(['user', 'localizacao']);
-    
+
             if ($searchTerm) {
                 $query->whereHas('user', function ($q) use ($searchTerm) {
                     $q->where('name', 'like', '%' . $searchTerm . '%');
                 });
             }
-    
+
             if ($selectedLocalizacao) {
                 $query->where('local', $selectedLocalizacao);
             }
-    
+
             // Paginação
             $query->orderBy('id', 'desc');
             $registros = $query->paginate($limit, ['*'], 'page', $page);
@@ -169,23 +168,37 @@ class RegistroPescaController extends Controller
 
     public function gerarRelatorio(Request $request)
     {
-        $ids = $request->input('ids');  
+        DB::enableQueryLog();
+
+        $startDate = $request->input('startDate');
+        $endDate = $request->input('endDate');
+        $location = $request->input('location');
+        $userIds = $request->input('userIds');
+        $registros = RegistroPesca::with(['user', 'localizacao']);
+
+        if (!empty($startDate) && !empty($endDate)) {
+            $registros->whereBetween('created_at', [$startDate, $endDate]);
+        }
+
+        if (!empty($location) && $location !='todos') {
+            $registros->where('local', "$location");
+        }
+
+        if (!empty($userIds) && is_array($userIds)) {
+            $registros->whereIn('id_user', $userIds);
+        }
+
+        $registros = $registros->get();
+     
+        // $queries = DB::getQueryLog();
+        // $lastQuery = end($queries);
+        // $sqlWithBindings = vsprintf(str_replace('?', "'%s'", $lastQuery['query']), $lastQuery['bindings']);
+        // dd($sqlWithBindings); 
         
-        // if (!is_array($ids) || count($ids) === 0) {
-        //     return response()->json([
-        //         'status' => false,
-        //         'message' => 'Lista de IDs inválida ou vazia.',
-        //     ], 400);
-        // }
-
-        $registros = RegistroPesca::with(['user', 'localizacao'])
-            // ->whereIn('id', $ids)
-            ->get();
-
         if ($registros->isEmpty()) {
             return response()->json([
                 'status' => false,
-                'message' => 'Nenhum registro encontrado para os IDs fornecidos.',
+                'message' => 'Não há registros de pesca para os filtros informados.',
             ], 404);
         }
 
@@ -199,27 +212,14 @@ class RegistroPescaController extends Controller
         }
 
         $user = Auth::user();
-        $cooperativa = Cooperativa::first();
 
-        $imagePath = 'https://demopesca.netlify.app/assets/icon_logo.png';
-        $imageData = file_get_contents($imagePath);  
+        $imagePath = 'https://demopesca.netlify.app/assets/logoPrincipal.png';
+        $imageData = file_get_contents($imagePath);
+        $base64Image = base64_encode($imageData);
+        $cooperativa->logo = $base64Image;
 
-        $base64Image = base64_encode($imageData);    
-     
-    
-        $pdf = PDF::loadView('pdf.relatorio_pesca', [
-            'registros' => $registros,
-            'user' => $user,
-            'cooperativa' => $cooperativa,
-            'base64Image' => $base64Image 
-        ]);
+        $pdf = PDF::loadView('pdf.relatorio_pesca', compact('registros', 'user', 'cooperativa'));
 
-     
-
-
-        // return view('pdf.relatorio_pesca', $dados);
-      
-
-        return $pdf->download('relatorio_pesca.pdf');
+        return $pdf->download('registro_pesca' . '.pdf');
     }
 }

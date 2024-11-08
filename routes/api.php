@@ -28,6 +28,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('pesca/{id}', [RegistroPescaController::class, 'update']);
     Route::get('pesca/meus', [RegistroPescaController::class, 'getByUserId']);
     Route::get('pesca', [RegistroPescaController::class, 'getAll']);
+    Route::post('pesca/relatorio-pesca', [RegistroPescaController::class,'gerarRelatorio']);
 
 
 
@@ -37,6 +38,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/{id}', [RegistroVendaController::class, 'update']);
         Route::get('/', [RegistroVendaController::class, 'getAll']);
         Route::get('/meus', [RegistroVendaController::class, 'getByUserId']);
+        Route::post('/relatorio-pesca', [RegistroVendaController::class,'gerarRelatorio']);
+
     });
 
     /*Registro financeiro*/
@@ -59,4 +62,3 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
 
-Route::get('relatorio-pesca', [RegistroPescaController::class,'gerarRelatorio']);
