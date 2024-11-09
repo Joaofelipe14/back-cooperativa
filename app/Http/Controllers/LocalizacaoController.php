@@ -11,7 +11,7 @@ class LocalizacaoController extends Controller
     public function index()
     {
         try {
-            $registros = Localizacao::all();
+            $registros = Localizacao::orderBy('id', 'desc')->get();
 
             return response()->json([
                 'status' => true,

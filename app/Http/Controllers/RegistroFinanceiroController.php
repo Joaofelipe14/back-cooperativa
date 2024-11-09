@@ -15,7 +15,8 @@ class RegistroFinanceiroController extends Controller
 {
     public function index()
     {
-        $registros = RegistroFinanceiro::all();
+        $registros = RegistroFinanceiro::orderBy('id', 'desc')->get();
+
         return response()->json([
             'mensagem' => 'Registros listados com sucesso',
             'sucesso' => true,
