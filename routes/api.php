@@ -8,6 +8,7 @@ use App\Http\Controllers\LocalizacaoController;
 
 use App\Http\Controllers\RegistroPescaController;
 use App\Http\Controllers\RegistroVendaController;
+use App\Http\Controllers\ResultadoMapaController;
 
 Route::post('usuario/registrar', [UserController::class, 'register']);
 
@@ -58,6 +59,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('busca-auditoria', [AuditoriaController::class,'getAll']);
     Route::get('tabelas-distintas', [AuditoriaController::class,'getTabelas']);
 
+    /*ResultadoMapa*/
+    Route::get('busca-resultado-mapa', [ResultadoMapaController::class,'getResultadoMapa']);
 });
 
 

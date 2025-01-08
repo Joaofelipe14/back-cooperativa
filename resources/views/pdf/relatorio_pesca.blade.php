@@ -10,7 +10,7 @@
                 <th>Código</th>
                 <th>Usuário</th>
                 <th>Pescado</th>
-                <th>Quantidade</th>
+                <th>Quantidade(Kg)</th>
             </tr>
         </thead>
         <tbody>

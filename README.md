@@ -10,3 +10,7 @@ como debugar laravel
     
         $sqlWithBindings = vsprintf(str_replace('?', "'%s'", $lastQuery['query']), $lastQuery['bindings']);
     
+
+    aws acess
+    joaoufma3@gmail.com
+    #JOao1408
