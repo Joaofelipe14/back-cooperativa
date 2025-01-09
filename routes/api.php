@@ -17,7 +17,7 @@ Route::post('usuario/login', [UserController::class, 'login']);
 
 Route::get('/version', function () {
     return response()->json([
-        'version' =>  1.2
+        'version' =>  '1.2'
     ]);
 });
 
