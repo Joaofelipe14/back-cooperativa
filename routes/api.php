@@ -15,11 +15,6 @@ Route::post('usuario/registrar', [UserController::class, 'register']);
 Route::post('usuario/login', [UserController::class, 'login']);
 
 
-Route::get('/version', function () {
-    return response()->json([
-        'version' =>  '1.3'
-    ]);
-});
 
 Route::middleware('auth:sanctum')->group(function () {
 
