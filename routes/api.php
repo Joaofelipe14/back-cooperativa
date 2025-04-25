@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\CooperativaController;
 use App\Http\Controllers\AuditoriaController;
+use App\Http\Controllers\ChatController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RegistroFinanceiroController;
@@ -67,4 +68,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/', [CooperativaController::class, 'show']);
         Route::post('/', [CooperativaController::class, 'update']);
     });
+
+    Route::get('/chat/conversas', [ChatController::class, 'listarConversas']);
+    Route::get('/chat/usuarios', [ChatController::class, 'listarUsuariosDisponiveis']);
+    Route::get('/chat/mensagens/{usuarioId}', [ChatController::class, 'listarMensagens']);
+    Route::post('/chat/mensagem', [ChatController::class, 'enviarMensagem']);
+    Route::delete('/chat/mensagem/{id}', [ChatController::class,'apagarMensagem']);
 });
