@@ -13,9 +13,17 @@ return new class extends Migration
     {
         Schema::create('cooperativa', function (Blueprint $table) {
             $table->id();
-            $table->string('nome')->nullable(); 
-            $table->string('endereco')->nullable(); 
-            $table->string('cep')->nullable(); 
+            $table->string('nome')->nullable();
+            $table->string('cnpj')->nullable();
+            $table->string('endereco')->nullable();
+            $table->string('cidade')->nullable();
+            $table->string('estado')->nullable();
+            $table->string('cep')->nullable();
+            $table->string('telefone')->nullable();
+            $table->string('email')->nullable();
+            $table->date('data_fundacao')->nullable();
+            $table->text('descricao')->nullable();
+            $table->string('url_foto')->nullable(); // campo adicionado
             $table->timestamps();
         });
     }

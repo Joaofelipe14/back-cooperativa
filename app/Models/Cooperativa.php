@@ -13,11 +13,16 @@ class Cooperativa extends Model
 
     protected $fillable = [
         'nome',
+        'cnpj',
+        'endereco',
+        'cidade',
+        'estado',
         'cep',
-        'endereco'
+        'telefone',
+        'email',
+        'data_fundacao',
+        'descricao',
+        'url_foto',
     ];
-    public function user()
-    {
-        return $this->belongsTo(User::class, 'user_id');
-    }
+  
 }

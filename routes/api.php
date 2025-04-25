@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\CooperativaController;
 use App\Http\Controllers\AuditoriaController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
@@ -11,7 +12,6 @@ use App\Http\Controllers\RegistroVendaController;
 use App\Http\Controllers\ResultadoMapaController;
 
 Route::post('usuario/registrar', [UserController::class, 'register']);
-
 Route::post('usuario/login', [UserController::class, 'login']);
 
 
@@ -29,7 +29,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('pesca/{id}', [RegistroPescaController::class, 'update']);
     Route::get('pesca/meus', [RegistroPescaController::class, 'getByUserId']);
     Route::get('pesca', [RegistroPescaController::class, 'getAll']);
-    Route::post('pesca/relatorio-pesca', [RegistroPescaController::class,'gerarRelatorio']);
+    Route::post('pesca/relatorio-pesca', [RegistroPescaController::class, 'gerarRelatorio']);
 
 
 
@@ -39,8 +39,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/{id}', [RegistroVendaController::class, 'update']);
         Route::get('/', [RegistroVendaController::class, 'getAll']);
         Route::get('/meus', [RegistroVendaController::class, 'getByUserId']);
-        Route::post('/relatorio-pesca', [RegistroVendaController::class,'gerarRelatorio']);
-
+        Route::post('/relatorio-pesca', [RegistroVendaController::class, 'gerarRelatorio']);
     });
 
     /*Registro financeiro*/
@@ -50,18 +49,22 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('financeiros/{id}', [RegistroFinanceiroController::class, 'update']);
     Route::delete('financeiros/{id}', [RegistroFinanceiroController::class, 'destroy']);
     Route::post('/financeiros/relatorio', [RegistroFinanceiroController::class, 'gerarPdf']);
-    
+
 
     /*Localizações*/
     Route::apiResource('localizacoes', LocalizacaoController::class);
 
     /*Auditoria*/
-    Route::get('busca-auditoria', [AuditoriaController::class,'getAll']);
-    Route::get('tabelas-distintas', [AuditoriaController::class,'getTabelas']);
+    Route::get('busca-auditoria', [AuditoriaController::class, 'getAll']);
+    Route::get('tabelas-distintas', [AuditoriaController::class, 'getTabelas']);
 
     /*ResultadoMapa*/
-    Route::get('busca-resultado-mapa', [ResultadoMapaController::class,'getResultadoMapa']);
+    Route::get('busca-resultado-mapa', [ResultadoMapaController::class, 'getResultadoMapa']);
+
+
+    /*Cooperativa*/
+    Route::prefix('cooperativa')->group(function () {
+        Route::get('/', [CooperativaController::class, 'show']);
+        Route::post('/', [CooperativaController::class, 'update']);
+    });
 });
-
-
-

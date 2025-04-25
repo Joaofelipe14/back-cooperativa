@@ -52,7 +52,7 @@ class UserController extends Controller
                 'cpf' => $request->cpf,
                 'cap' => $request->cap,
                 'contato' => $request->contato,
-                'tipo_usuario' => 'colaborador',
+                'tipo_usuario' => 'iniciante',
                 'primeiro_acesso' => 'S'
             ]);
 

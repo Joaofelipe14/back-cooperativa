@@ -11,7 +11,7 @@ Route::get('/', function () {
 
 Route::get('/login', function (Request $request) {
 
-    return response()->json(['status' => 'erro', 'message' => 'Sem autorização.'], 401);
+    return response()->json(['status' => 'erro', 'message' => 'Sem autorizacao.'], 401);
 
 })->name('login');
 
