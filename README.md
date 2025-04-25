@@ -100,7 +100,9 @@ Para criar as tabelas no banco configurado:
 
 php artisan migrate
 
-6. Inicie o Servidor Local
+php artisan db:seed
+
+1. Inicie o Servidor Local
 
 Execute o comando para rodar o servidor localmente:
 
@@ -174,3 +176,4 @@ Orientador: Prof. Dr. Haroldo Gomes
 ---
 
 
+# back-cooperativa
