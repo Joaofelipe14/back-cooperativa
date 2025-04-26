@@ -16,6 +16,12 @@ Route::post('usuario/registrar', [UserController::class, 'register']);
 Route::post('usuario/login', [UserController::class, 'login']);
 
 
+use App\Http\Controllers\ProdutoController;
+
+Route::middleware('auth:sanctum')->group(function () {
+
+});
+
 
 Route::middleware('auth:sanctum')->group(function () {
 
@@ -74,4 +80,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/chat/mensagens/{usuarioId}', [ChatController::class, 'listarMensagens']);
     Route::post('/chat/mensagem', [ChatController::class, 'enviarMensagem']);
     Route::delete('/chat/mensagem/{id}', [ChatController::class,'apagarMensagem']);
+
+    Route::get('/produtos', [ProdutoController::class, 'index']);
+    Route::get('/meus-produtos', [ProdutoController::class, 'meusProdutos']); 
+    Route::post('/produtos', [ProdutoController::class, 'store']);
+    Route::get('/produtos/{id}', [ProdutoController::class, 'show']);
+    Route::put('/produtos/{id}', [ProdutoController::class, 'update']);
+    Route::delete('/produtos/{id}', [ProdutoController::class, 'destroy']);
 });
