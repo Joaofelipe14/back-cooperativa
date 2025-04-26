@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gráficos de Produtos</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7f6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            color: #333;
+        }
+        .container {
+            width: 80%;
+            max-width: 1200px;
+            margin: 20px auto;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        .controls {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        select, button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        canvas {
+            max-width: 100%;
+            height: auto;
+            margin: 20px 0;
+        }
+        .graph-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+        .graph-container canvas {
+            width: 45%;
+            height: 300px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Relatórios de Produtos</h1>
+
+        <div class="controls">
+            <label for="periodo">Selecione o Período: </label>
+            <select id="periodo">
+                <option value="7d">Últimos 7 dias</option>
+                <option value="30d">Últimos 30 dias</option>
+                <option value="90d">Últimos 90 dias</option>
+            </select>
+            <button onclick="carregarGraficos()">Carregar Gráficos</button>
+        </div>
+
+        <div class="graph-container">
+            <div style="width: 45%; height: 300px;">
+                <canvas id="graficoTipo"></canvas>
+            </div>
+            <div style="width: 45%; height: 300px;">
+                <canvas id="graficoStatus"></canvas>
+            </div>
+        </div>
+
+        <div style="width: 100%; height: 400px;">
+            <canvas id="graficoUsuario"></canvas>
+        </div>
+    </div>
+
+    <script>
+        function carregarGraficos() {
+            const periodo = document.getElementById('periodo').value;
+
+            Promise.all([
+                fetch(`http://localhost:8000/api/grafico/tipo?periodo=${periodo}`).then(res => res.json()),
+                fetch(`http://localhost:8000/api/grafico/status?periodo=${periodo}`).then(res => res.json()),
+                fetch(`http://localhost:8000/api/grafico/usuario?periodo=${periodo}`).then(res => res.json())
+            ]).then(([tipos, status, usuarios]) => {
+                gerarGraficoTipo(tipos);
+                gerarGraficoStatus(status);
+                gerarGraficoUsuario(usuarios);
+            });
+        }
+
+        function gerarGraficoTipo(tipos) {
+            const ctx = document.getElementById('graficoTipo').getContext('2d');
+            const labels = tipos.map(tipo => tipo.nome);
+            const data = tipos.map(tipo => tipo.quantidade);
+
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: ['#FF5733', '#33FF57', '#3357FF', '#FF33A8', '#FFFF33'],
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.label}: ${context.raw} produtos`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function gerarGraficoStatus(status) {
+            const ctx = document.getElementById('graficoStatus').getContext('2d');
+            const labels = status.map(st => st.nome);
+            const data = status.map(st => st.quantidade);
+
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: ['#FF5733', '#33FF57', '#3357FF', '#FF33A8', '#FFFF33'],
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.label}: ${context.raw} produtos`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function gerarGraficoUsuario(usuarios) {
+            const ctx = document.getElementById('graficoUsuario').getContext('2d');
+            const labels = usuarios.map(user => user.nome);
+            const quantidade = usuarios.map(user => user.quantidade);
+            const totalVendido = usuarios.map(user => user.total_vendido);
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Quantidade de Produtos',
+                            data: quantidade,
+                            backgroundColor: '#66b3ff',
+                        },
+                        {
+                            label: 'Total Vendido',
+                            data: totalVendido,
+                            backgroundColor: '#99ff99',
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>

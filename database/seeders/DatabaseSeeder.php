@@ -10,11 +10,13 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             LocalizacaoTableSeeder::class,
-            // Adicione outros seeders aqui
-            UsersTableSeeder::class,
-            CooperativaSeeder::class,
             TipoProdutoSeeder::class,
             StatusProdutoSeeder::class,
+            UsersTableSeeder::class,
+            CooperativaSeeder::class,
+            ProdutoSeeder::class
+        
+            
         ]);
     }
 }

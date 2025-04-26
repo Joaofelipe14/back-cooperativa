@@ -17,11 +17,11 @@ Route::post('usuario/login', [UserController::class, 'login']);
 
 
 use App\Http\Controllers\ProdutoController;
+use App\Http\Controllers\GraficoController;
 
-Route::middleware('auth:sanctum')->group(function () {
-
-});
-
+Route::get('grafico/tipo', [GraficoController::class, 'graficoTipo']);
+Route::get('grafico/status', [GraficoController::class, 'graficoStatus']);
+Route::get('grafico/usuario', [GraficoController::class, 'graficoUsuario']);
 
 Route::middleware('auth:sanctum')->group(function () {
 
@@ -79,10 +79,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/chat/usuarios', [ChatController::class, 'listarUsuariosDisponiveis']);
     Route::get('/chat/mensagens/{usuarioId}', [ChatController::class, 'listarMensagens']);
     Route::post('/chat/mensagem', [ChatController::class, 'enviarMensagem']);
-    Route::delete('/chat/mensagem/{id}', [ChatController::class,'apagarMensagem']);
+    Route::delete('/chat/mensagem/{id}', [ChatController::class, 'apagarMensagem']);
 
     Route::get('/produtos', [ProdutoController::class, 'index']);
-    Route::get('/meus-produtos', [ProdutoController::class, 'meusProdutos']); 
+    Route::get('/meus-produtos', [ProdutoController::class, 'meusProdutos']);
     Route::post('/produtos', [ProdutoController::class, 'store']);
     Route::get('/produtos/{id}', [ProdutoController::class, 'show']);
     Route::put('/produtos/{id}', [ProdutoController::class, 'update']);
