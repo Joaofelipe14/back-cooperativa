@@ -1,8 +1,8 @@
 <?php
 
-use App\Http\Controllers\Api\CooperativaController;
 use App\Http\Controllers\AuditoriaController;
 use App\Http\Controllers\ChatController;
+use App\Http\Controllers\CooperativaController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RegistroFinanceiroController;
@@ -18,6 +18,8 @@ Route::post('usuario/login', [UserController::class, 'login']);
 
 use App\Http\Controllers\ProdutoController;
 use App\Http\Controllers\GraficoController;
+use App\Http\Controllers\StatusProdutoController;
+use App\Http\Controllers\TipoProdutoController;
 
 Route::get('grafico/tipo', [GraficoController::class, 'graficoTipo']);
 Route::get('grafico/status', [GraficoController::class, 'graficoStatus']);
@@ -69,12 +71,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('busca-resultado-mapa', [ResultadoMapaController::class, 'getResultadoMapa']);
 
 
-    /*Cooperativa*/
-    Route::prefix('cooperativa')->group(function () {
-        Route::get('/', [CooperativaController::class, 'show']);
-        Route::post('/', [CooperativaController::class, 'update']);
-    });
-
     Route::get('/chat/conversas', [ChatController::class, 'listarConversas']);
     Route::get('/chat/usuarios', [ChatController::class, 'listarUsuariosDisponiveis']);
     Route::get('/chat/mensagens/{usuarioId}', [ChatController::class, 'listarMensagens']);
@@ -87,4 +83,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/produtos/{id}', [ProdutoController::class, 'show']);
     Route::put('/produtos/{id}', [ProdutoController::class, 'update']);
     Route::delete('/produtos/{id}', [ProdutoController::class, 'destroy']);
+ 
+    Route::get('/status', [StatusProdutoController::class, 'index']);
+    Route::get('/tipo-produto', [TipoProdutoController::class, 'index']);
+
+
+        /*Cooperativa*/
+        Route::prefix('cooperativa')->group(function () {
+            Route::get('/', [CooperativaController::class, 'show']);
+            Route::post('/', [CooperativaController::class, 'update']);
+        });
 });
