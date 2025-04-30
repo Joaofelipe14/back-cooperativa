@@ -19,8 +19,12 @@ class ProdutoController extends Controller
             if ($userAuth->tipo_usuario !== 'admin') {
                 return response()->json(['erro' => 'Acesso não autorizado'], 403);
             }
+            $nome = $request->input('searchTerm', ''); 
 
             $produtos = Produto::with(['tipo', 'status', 'localizacao', 'user'])
+                ->when($nome, function ($query, $nome) {
+                    return $query->where('nome', 'like', "%{$nome}%"); 
+                })
                 ->orderBy('created_at', 'desc')
                 ->paginate($request->input('per_page', 10));
 
@@ -29,6 +33,7 @@ class ProdutoController extends Controller
             return response()->json(['erro' => 'Erro ao listar produtos', 'detalhes' => $e->getMessage()], 500);
         }
     }
+
 
     /**
      * Lista produtos do usuário logado com paginação.
