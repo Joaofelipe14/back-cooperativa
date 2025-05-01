@@ -30,7 +30,7 @@ class ProdutoSeeder extends Seeder
                 'preco' => rand(100, 1000),
                 'quantidade' => rand(1, 100),
                 'unidade_medida' => 'unidade',
-                'imagem' => 'https://via.placeholder.com/150',
+                'imagem' => 'https://raw.githubusercontent.com/Joaofelipe14/front-cooperativa/447d054bbf97bbae8908bfc6c0c8acbccc21b932/src/placeholder-image.jpg?token=AUQ4A2N4AZ6XCYSOZOEIOH3ICJ2OE',
             ]);
         }
     }

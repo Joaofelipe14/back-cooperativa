@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Localizacao;
 use App\Models\StatusProduto;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class StatusProdutoController extends Controller
@@ -12,7 +10,7 @@ class StatusProdutoController extends Controller
     public function index()
     {
         try {
-            $registros = StatusProduto::orderBy('id', 'desc')->get();
+            $registros = StatusProduto::get();
 
             return response()->json([
                 'status' => true,

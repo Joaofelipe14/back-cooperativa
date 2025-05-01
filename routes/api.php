@@ -83,14 +83,16 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/produtos/{id}', [ProdutoController::class, 'show']);
     Route::put('/produtos/{id}', [ProdutoController::class, 'update']);
     Route::delete('/produtos/{id}', [ProdutoController::class, 'destroy']);
- 
+
     Route::get('/status', [StatusProdutoController::class, 'index']);
-    Route::get('/tipo-produto', [TipoProdutoController::class, 'index']);
+    Route::get('/tipos-produto', [TipoProdutoController::class, 'index']);
+    Route::post('/tipos-produto', [TipoProdutoController::class, 'store']);
+    Route::post('/tipos-produto-cadastrar/{id}', [TipoProdutoController::class, 'update']);
 
 
-        /*Cooperativa*/
-        Route::prefix('cooperativa')->group(function () {
-            Route::get('/', [CooperativaController::class, 'show']);
-            Route::post('/', [CooperativaController::class, 'update']);
-        });
+    /*Cooperativa*/
+    Route::prefix('cooperativa')->group(function () {
+        Route::get('/', [CooperativaController::class, 'show']);
+        Route::post('/', [CooperativaController::class, 'update']);
+    });
 });
