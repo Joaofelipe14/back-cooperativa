@@ -42,17 +42,27 @@ class ProdutoController extends Controller
     {
         try {
             $userAuth = Auth::user();
-
-            $produtos = Produto::with(['tipo', 'status', 'localizacao'])
+    
+            $tipoId = $request->input('tipo', null);
+    
+            $perPage = $request->input('per_page', 5);
+    
+            $produtosQuery = Produto::with(['tipo', 'status', 'localizacao'])
                 ->where('user_id', $userAuth->id)
-                ->orderBy('created_at', 'desc')
-                ->paginate($request->input('per_page', 10));
-
+                ->orderBy('created_at', 'desc');
+    
+            if ($tipoId) {
+                $produtosQuery->where('tipo_id', $tipoId);
+            }
+    
+            $produtos = $produtosQuery->paginate($perPage);
+    
             return response()->json($produtos);
         } catch (\Throwable $e) {
             return response()->json(['erro' => 'Erro ao listar seus produtos', 'detalhes' => $e->getMessage()], 500);
         }
     }
+    
 
     /**
      * Cadastra um novo produto.
@@ -69,11 +79,16 @@ class ProdutoController extends Controller
                 'nome' => 'required|string|max:255',
                 'descricao' => 'nullable|string',
                 'preco' => 'required|numeric|min:0',
-                'quantidade' => 'required|integer|min:1',
-                'unidade_medida' => 'required|string|max:50',
-                'imagem' => 'nullable|string',
+                'quantidade' => 'nullable|integer|min:1',
+                'unidade_medida' => 'nullable|string|max:50',
+                'imagem' => 'nullable|file|mimes:jpeg,png,jpg,gif', 
             ]);
-
+    
+            if ($request->hasFile('imagem')) {
+                $imagem = $request->file('imagem');
+                $imagemUrl = $imagem->store('produtos', 'public'); 
+                $data['imagem'] = 'http://localhost:8000/storage/'.$imagemUrl;
+            }
             $data['user_id'] = $userAuth->id;
 
             $produto = Produto::create($data);
@@ -119,9 +134,20 @@ class ProdutoController extends Controller
                 'preco' => 'sometimes|numeric|min:0',
                 'quantidade' => 'sometimes|integer|min:1',
                 'unidade_medida' => 'sometimes|string|max:50',
-                'imagem' => 'sometimes|string',
+                'imagem' => 'nullable|file|mimes:jpeg,png,jpg,gif',
             ]);
-
+    
+            $produto = Produto::findOrFail($id);
+    
+            if ($request->hasFile('imagem')) {
+                if ($produto->imagem && file_exists(storage_path('app/public/' . $produto->imagem))) {
+                    unlink(storage_path('app/public/' . $produto->imagem));
+                }
+                $imagem = $request->file('imagem');
+                $imagemUrl = $imagem->store('produtos', 'public');
+                $data['imagem'] = 'http://localhost:8000/storage/'.$imagemUrl;
+            }
+    
             $produto->update($data);
 
             return response()->json($produto);

@@ -93,6 +93,8 @@ DB_PASSWORD=senha
 
 
 php artisan key:generate
+php artisan storage:link
+
 
 5. Execute as Migrações do Banco de Dados
 
