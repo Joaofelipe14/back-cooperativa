@@ -13,32 +13,33 @@ class ChatController extends Controller
     public function listarConversas()
     {
         $usuarioId = Auth::id();
-    
+
         $mensagens = Mensagem::where(function ($q) use ($usuarioId) {
-                $q->where('remetente_id', $usuarioId)
-                  ->orWhere('destinatario_id', $usuarioId);
-            })
+            $q->where('remetente_id', $usuarioId)
+                ->orWhere('destinatario_id', $usuarioId);
+        })
             ->with(['remetente', 'destinatario'])
-            ->orderBy('created_at', 'desc') 
+            ->orderBy('created_at', 'desc')
             ->get()
             ->groupBy(function ($item) use ($usuarioId) {
                 return $item->remetente_id === $usuarioId ? $item->destinatario_id : $item->remetente_id;
             })
             ->map(function ($mensagens, $interlocutorId) use ($usuarioId) {
                 $ultimaMensagem = $mensagens->first();
-    
+
                 $temNova = $mensagens->where('remetente_id', $interlocutorId)
-                                     ->where('destinatario_id', $usuarioId)
-                                     ->where('lida', false)
-                                     ->isNotEmpty();
-    
+                    ->where('destinatario_id', $usuarioId)
+                    ->where('lida', false)
+                    ->isNotEmpty();
+
                 $interlocutor = $ultimaMensagem->remetente_id == $usuarioId
                     ? $ultimaMensagem->destinatario
                     : $ultimaMensagem->remetente;
-    
+
                 return [
-                    'usuario_id' => $interlocutor->id,
-                    'nome' => $interlocutor->name ?? '', 
+                    'url_perfil' => $interlocutor->url_perfil ?? '',
+                    'id' => $interlocutor->id,
+                    'nome' => $interlocutor->name ?? '',
                     'ultima_mensagem' => [
                         'id' => $ultimaMensagem->id,
                         'texto' => $ultimaMensagem->conteudo,
@@ -49,16 +50,16 @@ class ChatController extends Controller
                 ];
             })
             ->values();
-    
+
         return response()->json($mensagens);
     }
-    
+
 
     public function listarUsuariosDisponiveis()
     {
         $usuarios = User::where('tipo_usuario', 'colaborador')
-                        ->where('id', '!=', Auth::id())
-                        ->get();
+            ->where('id', '!=', Auth::id())
+            ->get();
 
         return response()->json($usuarios);
     }
@@ -72,15 +73,15 @@ class ChatController extends Controller
             ->where('lida', false)
             ->update(['lida' => true]);
 
-        $mensagens = Mensagem::where(function($q) use ($autenticadoId, $usuarioId) {
+        $mensagens = Mensagem::where(function ($q) use ($autenticadoId, $usuarioId) {
             $q->where('remetente_id', $autenticadoId)->where('destinatario_id', $usuarioId);
-        })->orWhere(function($q) use ($autenticadoId, $usuarioId) {
+        })->orWhere(function ($q) use ($autenticadoId, $usuarioId) {
             $q->where('remetente_id', $usuarioId)->where('destinatario_id', $autenticadoId);
         })
-        ->with('resposta')
-        ->whereNull('deleted_at')
-        ->orderBy('created_at', 'asc')
-        ->get();
+            ->with('resposta')
+            ->whereNull('deleted_at')
+            ->orderBy('created_at', 'asc')
+            ->get();
 
         return response()->json($mensagens);
     }
@@ -125,8 +126,8 @@ class ChatController extends Controller
         $usuarioId = Auth::id();
 
         $total = Mensagem::where('destinatario_id', $usuarioId)
-                         ->where('lida', false)
-                         ->count();
+            ->where('lida', false)
+            ->count();
 
         return response()->json(['novas_mensagens' => $total]);
     }
