@@ -8,6 +8,11 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\RegistroFinanceiroController;
 use App\Http\Controllers\LocalizacaoController;
 
+
+use App\Http\Controllers\ProdutoController;
+use App\Http\Controllers\GraficoController;
+use App\Http\Controllers\StatusProdutoController;
+use App\Http\Controllers\TipoProdutoController;
 use App\Http\Controllers\RegistroPescaController;
 use App\Http\Controllers\RegistroVendaController;
 use App\Http\Controllers\ResultadoMapaController;
@@ -16,10 +21,7 @@ Route::post('usuario/registrar', [UserController::class, 'register']);
 Route::post('usuario/login', [UserController::class, 'login']);
 
 
-use App\Http\Controllers\ProdutoController;
-use App\Http\Controllers\GraficoController;
-use App\Http\Controllers\StatusProdutoController;
-use App\Http\Controllers\TipoProdutoController;
+Route::get('/publico/produtos', [ProdutoController::class, 'publicoIndex']);
 
 Route::get('grafico/tipo', [GraficoController::class, 'graficoTipo']);
 Route::get('grafico/status', [GraficoController::class, 'graficoStatus']);

@@ -16,14 +16,14 @@ class ProdutoController extends Controller
         try {
             $userAuth = Auth::user();
 
-            if ($userAuth->tipo_usuario !== 'admin') {
-                return response()->json(['erro' => 'Acesso não autorizado'], 403);
-            }
-            $nome = $request->input('searchTerm', ''); 
+            // if ($userAuth->tipo_usuario !== 'admin') {
+            //     return response()->json(['erro' => 'Acesso não autorizado'], 403);
+            // }
+            $nome = $request->input('searchTerm', '');
 
             $produtos = Produto::with(['tipo', 'status', 'localizacao', 'user'])
                 ->when($nome, function ($query, $nome) {
-                    return $query->where('nome', 'like', "%{$nome}%"); 
+                    return $query->where('nome', 'like', "%{$nome}%");
                 })
                 ->orderBy('created_at', 'desc')
                 ->paginate($request->input('per_page', 10));
@@ -34,7 +34,35 @@ class ProdutoController extends Controller
         }
     }
 
+    public function publicoIndex(Request $request)
+    {
+        try {
 
+            $tipoId = $request->input('tipo_id');
+            $localizacaoId = $request->input('localizacao_id');
+            $nome = $request->input('searchTerm');
+            $perPage = $request->input('per_page', 10);
+ 
+            $produtosQuery = Produto::with(['tipo', 'status', 'localizacao'])
+                ->when($tipoId, function ($query, $tipoId) {
+                    return $query->where('tipo_id', $tipoId);
+                })
+                ->when($localizacaoId, function ($query, $localizacaoId) {
+                    return $query->where('localizacao_id', $localizacaoId);
+                })
+                ->when($nome, function ($query, $nome) {
+                    return $query->where('nome', 'like', "%{$nome}%");
+                })
+                ->orderBy('created_at', 'desc');
+
+            $produtos = $produtosQuery->paginate($perPage);
+
+
+            return response()->json($produtos);
+        } catch (\Throwable $e) {
+            return response()->json(['erro' => 'Erro ao listar produtos', 'detalhes' => $e->getMessage()], 500);
+        }
+    }
     /**
      * Lista produtos do usuário logado com paginação.
      */
@@ -42,27 +70,27 @@ class ProdutoController extends Controller
     {
         try {
             $userAuth = Auth::user();
-    
+
             $tipoId = $request->input('tipo', null);
-    
+
             $perPage = $request->input('per_page', 5);
-    
+
             $produtosQuery = Produto::with(['tipo', 'status', 'localizacao'])
                 ->where('user_id', $userAuth->id)
                 ->orderBy('created_at', 'desc');
-    
+
             if ($tipoId) {
                 $produtosQuery->where('tipo_id', $tipoId);
             }
-    
+
             $produtos = $produtosQuery->paginate($perPage);
-    
+
             return response()->json($produtos);
         } catch (\Throwable $e) {
             return response()->json(['erro' => 'Erro ao listar seus produtos', 'detalhes' => $e->getMessage()], 500);
         }
     }
-    
+
 
     /**
      * Cadastra um novo produto.
@@ -81,13 +109,13 @@ class ProdutoController extends Controller
                 'preco' => 'required|numeric|min:0',
                 'quantidade' => 'nullable|integer|min:1',
                 'unidade_medida' => 'nullable|string|max:50',
-                'imagem' => 'nullable|file|mimes:jpeg,png,jpg,gif', 
+                'imagem' => 'nullable|file|mimes:jpeg,png,jpg,gif',
             ]);
-    
+
             if ($request->hasFile('imagem')) {
                 $imagem = $request->file('imagem');
-                $imagemUrl = $imagem->store('produtos', 'public'); 
-                $data['imagem'] = 'http://localhost:8000/storage/'.$imagemUrl;
+                $imagemUrl = $imagem->store('produtos', 'public');
+                $data['imagem'] = 'http://localhost:8000/storage/' . $imagemUrl;
             }
             $data['user_id'] = $userAuth->id;
 
@@ -136,18 +164,18 @@ class ProdutoController extends Controller
                 'unidade_medida' => 'sometimes|string|max:50',
                 'imagem' => 'nullable|file|mimes:jpeg,png,jpg,gif',
             ]);
-    
+
             $produto = Produto::findOrFail($id);
-    
+
             if ($request->hasFile('imagem')) {
                 if ($produto->imagem && file_exists(storage_path('app/public/' . $produto->imagem))) {
                     unlink(storage_path('app/public/' . $produto->imagem));
                 }
                 $imagem = $request->file('imagem');
                 $imagemUrl = $imagem->store('produtos', 'public');
-                $data['imagem'] = 'http://localhost:8000/storage/'.$imagemUrl;
+                $data['imagem'] = 'http://localhost:8000/storage/' . $imagemUrl;
             }
-    
+
             $produto->update($data);
 
             return response()->json($produto);
